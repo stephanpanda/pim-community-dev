@@ -50,8 +50,6 @@ $rules = [
         'Akeneo\Pim\Structure\Component\Repository\ExternalApi\AttributeRepositoryInterface',
         // TODO public constant
         'Akeneo\Pim\Structure\Component\AttributeTypes',
-        // TODO: : EASY PICK! API PaginatorInterface should catch ServerErrorResponseException and throw its own exception,
-        'Elasticsearch\Common\Exceptions\ServerErrorResponseException',
         // TODO: used in CategoryRepository for method findTranslatedLabels => can be reworked for a query (and remove the extend of Gedmo repository)
         'Gedmo\Tree\Entity\Repository\NestedTreeRepository',
         // TODO: we should not inject the UserContext as a service
