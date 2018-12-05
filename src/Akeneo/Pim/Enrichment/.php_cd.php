@@ -28,8 +28,6 @@ $rules = [
         'Akeneo\Platform\Bundle\UIBundle\Form\Subscriber\DisableFieldSubscriber',
         'Akeneo\Platform\Bundle\UIBundle\Provider\Form\FormProviderInterface',
         'Akeneo\Platform\Bundle\UIBundle\Provider\TranslatedLabelsProviderInterface',
-        // TODO: EASY PICK! it should be registered in the structure bundle
-        'Akeneo\Pim\Structure\Bundle\DependencyInjection\Compiler\RegisterAttributeTypePass',
         // TODO remove all links by reference
         'Akeneo\Pim\Structure\Component\Model\AttributeInterface',
         'Akeneo\Pim\Structure\Component\Model\AttributeOptionInterface',
