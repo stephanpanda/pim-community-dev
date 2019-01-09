@@ -69,6 +69,22 @@ class OptionCollectionAttribute extends AbstractAttribute
         }
     }
 
+    public function addOption(AttributeOption $option): void
+    {
+        Assert::maxCount(
+            $this->attributeOptions,
+            self::MAX_OPTIONS - 1,
+            sprintf(
+                'It is not possible to add a new option as a multiselect attribute can have a maximum of %d options',
+                self::MAX_OPTIONS
+            )
+        );
+
+        Assert::false(isset($this->attributeOptions[(string) $option->getCode()]));
+
+        $this->attributeOptions[(string) $option->getCode()] = $option;
+    }
+
     public function normalize(): array
     {
         return array_merge(

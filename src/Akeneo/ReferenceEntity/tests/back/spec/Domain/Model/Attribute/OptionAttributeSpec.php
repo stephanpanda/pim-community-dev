@@ -164,4 +164,55 @@ class OptionAttributeSpec extends ObjectBehavior
 
         $this->shouldThrow(\InvalidArgumentException::class)->during('getAttributeOption', [OptionCode::fromString('blue')]);
     }
+
+    function it_adds_a_new_option()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                )
+            ]
+        );
+
+        $newOption = AttributeOption::create(
+            OptionCode::fromString('green'),
+            LabelCollection::fromArray(['fr_FR' => 'vert'])
+        );
+
+        $this->addOption($newOption);
+
+        $this->getAttributeOptions()->shouldBeLike(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                ),
+                AttributeOption::create(
+                    OptionCode::fromString('green'),
+                    LabelCollection::fromArray(['fr_FR' => 'vert'])
+                ),
+            ]
+        );
+    }
+
+    function it_cannot_add_a_new_option_if_the_option_already_exists()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                )
+            ]
+        );
+
+        $newOption = AttributeOption::create(
+            OptionCode::fromString('red'),
+            LabelCollection::fromArray(['fr_FR' => 'rouge'])
+        );
+
+        $this->shouldThrow(\InvalidArgumentException::class)->during('addOption', [$newOption]);
+    }
 }

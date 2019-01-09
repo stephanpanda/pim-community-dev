@@ -58,6 +58,13 @@ class OptionAttribute extends AbstractAttribute
         }
     }
 
+    public function addOption(AttributeOption $option): void
+    {
+        Assert::false(isset($this->attributeOptions[(string) $option->getCode()]));
+
+        $this->attributeOptions[(string) $option->getCode()] = $option;
+    }
+
     public function normalize(): array
     {
         return array_merge(
