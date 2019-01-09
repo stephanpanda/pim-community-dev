@@ -80,7 +80,14 @@ class OptionCollectionAttribute extends AbstractAttribute
             )
         );
 
-        Assert::false(isset($this->attributeOptions[(string) $option->getCode()]));
+        Assert::false(isset($this->attributeOptions[(string) $option->getCode()]), 'Option already exists in the collection');
+
+        $this->attributeOptions[(string) $option->getCode()] = $option;
+    }
+
+    public function updateOption(AttributeOption $option): void
+    {
+        Assert::true(isset($this->attributeOptions[(string) $option->getCode()]), 'Option cannot be set as it does not exist');
 
         $this->attributeOptions[(string) $option->getCode()] = $option;
     }

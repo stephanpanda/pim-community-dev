@@ -215,4 +215,51 @@ class OptionAttributeSpec extends ObjectBehavior
 
         $this->shouldThrow(\InvalidArgumentException::class)->during('addOption', [$newOption]);
     }
+
+    function it_updates_an_existing_option()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                )
+            ]
+        );
+
+        $option = AttributeOption::create(
+            OptionCode::fromString('red'),
+            LabelCollection::fromArray(['en_US' => 'red'])
+        );
+
+        $this->updateOption($option);
+
+        $this->getAttributeOptions()->shouldBeLike(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['en_US' => 'red'])
+                )
+            ]
+        );
+    }
+
+    function it_cannot_update_an_new_option_if_the_option_does_not_exist()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                )
+            ]
+        );
+
+        $newOption = AttributeOption::create(
+            OptionCode::fromString('blue'),
+            LabelCollection::fromArray([])
+        );
+
+        $this->shouldThrow(\InvalidArgumentException::class)->during('updateOption', [$newOption]);
+    }
 }
