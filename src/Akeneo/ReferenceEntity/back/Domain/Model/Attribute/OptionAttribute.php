@@ -86,6 +86,15 @@ class OptionAttribute extends AbstractAttribute
         return array_key_exists((string) $optionCode, $this->attributeOptions);
     }
 
+    public function getAttributeOption(OptionCode $code): AttributeOption
+    {
+        if (!isset($this->attributeOptions[(string) $code])) {
+            throw new \InvalidArgumentException(sprintf('Attribute option "%s" does not exist.', (string) $code));
+        }
+
+        return $this->attributeOptions[(string) $code];
+    }
+
     protected function getType(): string
     {
         return self::ATTRIBUTE_TYPE;

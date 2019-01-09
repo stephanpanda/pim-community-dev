@@ -123,4 +123,45 @@ class OptionAttributeSpec extends ObjectBehavior
         $this->hasAttributeOption(OptionCode::fromString('green'))->shouldReturn(true);
         $this->hasAttributeOption(OptionCode::fromString('pink'))->shouldReturn(false);
     }
+
+    function it_gets_an_option_in_the_collection()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                ),
+                AttributeOption::create(
+                    OptionCode::fromString('green'),
+                    LabelCollection::fromArray(['fr_FR' => 'vert'])
+                ),
+            ]
+        );
+
+        $this->getAttributeOption(OptionCode::fromString('red'))->shouldBeLike(
+            AttributeOption::create(
+                OptionCode::fromString('red'),
+                LabelCollection::fromArray(['fr_FR' => 'rouge'])
+            )
+        );
+    }
+
+    function it_triggers_exception_when_the_code_does_not_exist()
+    {
+        $this->setOptions(
+            [
+                AttributeOption::create(
+                    OptionCode::fromString('red'),
+                    LabelCollection::fromArray(['fr_FR' => 'rouge'])
+                ),
+                AttributeOption::create(
+                    OptionCode::fromString('green'),
+                    LabelCollection::fromArray(['fr_FR' => 'vert'])
+                ),
+            ]
+        );
+
+        $this->shouldThrow(\InvalidArgumentException::class)->during('getAttributeOption', [OptionCode::fromString('blue')]);
+    }
 }
