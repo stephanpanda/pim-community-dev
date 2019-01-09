@@ -47,6 +47,7 @@ class AppendAttributeOptionHandler
 
         $attribute = $this->attributeRepository->getByIdentifier($attributeIdentifier);
         Assert::isInstanceOfAny($attribute, [OptionCollectionAttribute::class, OptionAttribute::class]);
+        Assert::false($attribute->hasAttributeOption(OptionCode::fromString($command->optionCode)));
 
         $option = AttributeOption::create(
             OptionCode::fromString($command->optionCode),
