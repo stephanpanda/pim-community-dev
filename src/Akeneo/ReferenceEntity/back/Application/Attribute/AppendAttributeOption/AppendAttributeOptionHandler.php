@@ -48,19 +48,12 @@ class AppendAttributeOptionHandler
         $attribute = $this->attributeRepository->getByIdentifier($attributeIdentifier);
         Assert::isInstanceOfAny($attribute, [OptionCollectionAttribute::class, OptionAttribute::class]);
 
-        $option = $this->createOption($command);
-        $options = $attribute->getAttributeOptions();
-        $options[] = $option;
-
-        $attribute->setOptions($options);
-        $this->attributeRepository->update($attribute);
-    }
-
-    private function createOption(AppendAttributeOptionCommand $command): AttributeOption
-    {
-        return AttributeOption::create(
+        $option = AttributeOption::create(
             OptionCode::fromString($command->optionCode),
             LabelCollection::fromArray($command->labels)
         );
+
+        $attribute->addOption($option);
+        $this->attributeRepository->update($attribute);
     }
 }
