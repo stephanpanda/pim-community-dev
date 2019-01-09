@@ -8,6 +8,7 @@ use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeOption\AttributeOptio
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeOption\OptionCode;
 use Akeneo\ReferenceEntity\Domain\Model\LabelCollection;
 use Akeneo\ReferenceEntity\Domain\Model\ReferenceEntity\ReferenceEntityIdentifier;
+use http\Exception\InvalidArgumentException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -94,6 +95,15 @@ class OptionCollectionAttribute extends AbstractAttribute
     public function hasAttributeOption(OptionCode $optionCode): bool
     {
         return array_key_exists((string) $optionCode, $this->attributeOptions);
+    }
+
+    public function getAttributeOption(OptionCode $code): AttributeOption
+    {
+        if (!isset($this->attributeOptions[(string) $code])) {
+            throw new \InvalidArgumentException(sprintf('Attribute option "%s" does not exist.', (string) $code));
+        }
+
+        return $this->attributeOptions[(string) $code];
     }
 
     protected function getType(): string
