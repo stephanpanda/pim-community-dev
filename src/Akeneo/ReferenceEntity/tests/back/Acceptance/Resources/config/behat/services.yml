@@ -97,6 +97,14 @@ services:
         tags:
             - { name: fob.context_service }
 
+    akeneo_referenceentity.tests.back.acceptance.context.create_attribute_option_context:
+        class: Akeneo\ReferenceEntity\Acceptance\Context\CreateAttributeOptionContext
+        arguments:
+            - '@__symfony__.akeneo_referenceentity.infrastructure.persistence.repository.attribute'
+            - '@__symfony__.akeneo_referenceentity.application.attribute.append_attribute_option_handler'
+        tags:
+            - { name: fob.context_service }
+
     akeneo_referenceentity.tests.back.acceptance.context.edit_record_context:
         class: Akeneo\ReferenceEntity\tests\back\Acceptance\Context\EditRecordContext
         arguments:
