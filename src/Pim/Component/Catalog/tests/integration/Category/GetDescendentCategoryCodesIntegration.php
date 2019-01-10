@@ -15,16 +15,13 @@ use Pim\Component\Catalog\Model\CategoryInterface;
  */
 class GetDescendentCategoryCodesIntegration extends TestCase
 {
-    // Validates that only the parent category code itself is returned.
+    // Validates that nothing is returned when the parent is a leaf.
     public function testGetDescendentCategoryCodesOfALeafCategory()
     {
         $parentCategory = $this->fetchCategory('master_accessories_scarves');
         $descendentCategoryCodes = $this->getDescendantCategoryCodesOf($parentCategory);
 
-        Assert::assertSame(
-            $descendentCategoryCodes,
-            ['master_accessories_scarves']
-        );
+        Assert::assertSame($descendentCategoryCodes, []);
     }
 
     // Validates that category codes from all levels under the parent are returned.
@@ -36,7 +33,6 @@ class GetDescendentCategoryCodesIntegration extends TestCase
         Assert::assertSame(
             $descendentCategoryCodes,
             [
-                'master',
                 'master_accessories',
                 'master_accessories_belts',
                 'master_accessories_bags',
