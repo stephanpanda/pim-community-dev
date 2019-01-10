@@ -24,13 +24,14 @@ use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeOrder;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeValuePerChannel;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeValuePerLocale;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\OptionAttribute;
+use Akeneo\ReferenceEntity\Domain\Model\Attribute\OptionCollectionAttribute;
 use Akeneo\ReferenceEntity\Domain\Model\LabelCollection;
 use Akeneo\ReferenceEntity\Domain\Model\ReferenceEntity\ReferenceEntityIdentifier;
 use Akeneo\ReferenceEntity\Domain\Repository\AttributeRepositoryInterface;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 
-class CreateAttributeOptionContext implements Context
+class AppendAttributeOptionContext implements Context
 {
     /** @var AttributeRepositoryInterface */
     private $attributeRepository;
@@ -72,7 +73,7 @@ class CreateAttributeOptionContext implements Context
     }
 
     /**
-     * @When /^the user appends a new option for this attribute$/
+     * @When /^the user appends a new option for this option attribute$/
      */
     public function theUserAppendsANewOptionForThisAttribute()
     {
@@ -86,7 +87,7 @@ class CreateAttributeOptionContext implements Context
     }
 
     /**
-     * @Then /^the option is added into the option collection of the attribute$/
+     * @Then /^the option is added into the option collection of this attribute$/
      */
     public function theOptionIsAddedIntoTheOptionCollectionOfTheAttribute()
     {
@@ -101,5 +102,44 @@ class CreateAttributeOptionContext implements Context
         );
 
         Assert::assertEquals($expectedOption, $option);
+    }
+
+    /**
+     * @Given an option collection attribute
+     */
+    public function anOptionCollectionAttribute()
+    {
+        $optionAttribute = OptionCollectionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+        $optionAttribute->setOptions([
+            AttributeOption::create(
+                OptionCode::fromString('blue'),
+                LabelCollection::fromArray([])
+            )
+        ]);
+
+        $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @When the user appends a new option for this option collection attribute
+     */
+    public function theUserAddANewOptionForThisOptionCollectionAttribute()
+    {
+        $command = new AppendAttributeOptionCommand();
+        $command->referenceEntityIdentifier = 'designer';
+        $command->attributeCode = 'color';
+        $command->optionCode = 'red';
+        $command->labels = ['en_US' => 'Red', 'fr_FR' => 'Rouge'];
+
+        ($this->appendAttributeOptionHandler)($command);
     }
 }
