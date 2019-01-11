@@ -67,7 +67,7 @@ class AppendAttributeOptionContext implements Context
             AttributeIdentifier::fromString('color'),
             ReferenceEntityIdentifier::fromString('designer'),
             AttributeCode::fromString('color'),
-            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            LabelCollection::fromArray([]),
             AttributeOrder::fromInteger(1),
             AttributeIsRequired::fromBoolean(true),
             AttributeValuePerChannel::fromBoolean(false),
@@ -134,7 +134,7 @@ class AppendAttributeOptionContext implements Context
             AttributeIdentifier::fromString('color'),
             ReferenceEntityIdentifier::fromString('designer'),
             AttributeCode::fromString('color'),
-            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            LabelCollection::fromArray([]),
             AttributeOrder::fromInteger(1),
             AttributeIsRequired::fromBoolean(true),
             AttributeValuePerChannel::fromBoolean(false),
@@ -182,7 +182,7 @@ class AppendAttributeOptionContext implements Context
             AttributeIdentifier::fromString('color'),
             ReferenceEntityIdentifier::fromString('designer'),
             AttributeCode::fromString('color'),
-            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            LabelCollection::fromArray([]),
             AttributeOrder::fromInteger(1),
             AttributeIsRequired::fromBoolean(true),
             AttributeValuePerChannel::fromBoolean(false),
@@ -210,7 +210,7 @@ class AppendAttributeOptionContext implements Context
             AttributeIdentifier::fromString('color'),
             ReferenceEntityIdentifier::fromString('designer'),
             AttributeCode::fromString('color'),
-            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            LabelCollection::fromArray([]),
             AttributeOrder::fromInteger(1),
             AttributeIsRequired::fromBoolean(true),
             AttributeValuePerChannel::fromBoolean(false),
@@ -227,5 +227,78 @@ class AppendAttributeOptionContext implements Context
         $optionAttribute->setOptions($options);
 
         $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @Given /^an option collection attribute having one option with the code Red$/
+     */
+    public function anOptionCollectionAttributeHavingOneOptionWithTheCodeRed()
+    {
+        $optionAttribute = OptionCollectionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([]),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+        $optionAttribute->setOptions([
+            AttributeOption::create(
+                OptionCode::fromString('red'),
+                LabelCollection::fromArray([])
+            )
+        ]);
+
+        $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @Given /^an option collection attribute Color with a Red option$/
+     */
+    public function anOptionCollectionAttributeColorWithARedOption()
+    {
+        $optionAttribute = OptionCollectionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([]),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+        $optionAttribute->setOptions([
+            AttributeOption::create(
+                OptionCode::fromString('red'),
+                LabelCollection::fromArray([])
+            )
+        ]);
+
+        $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @When /^the user appends a Red option into the option collection attribute$/
+     */
+    public function theUserAppendsARedOptionIntoTheOptionCollectionAttribute()
+    {
+        $command = new AppendAttributeOptionCommand();
+        $command->referenceEntityIdentifier = 'designer';
+        $command->attributeCode = 'color';
+        $command->optionCode = 'red';
+        $command->labels = ['en_US' => 'Red', 'fr_FR' => 'Rouge'];
+
+        $violations = $this->validator->validate($command);
+        $this->constraintViolationsContext->addViolations($violations);
+
+        if ($violations->count() === 0) {
+            try {
+                ($this->appendAttributeOptionHandler)($command);
+            } catch (\Exception $e) {
+                $this->exceptionContext->setException($e);
+            }
+        }
     }
 }

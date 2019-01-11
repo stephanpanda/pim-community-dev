@@ -41,3 +41,9 @@ Feature: Append a valid option into an attribute
     Given an option collection attribute with the maximum number of options
     When the user appends a new option for this option collection attribute
     Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
+
+  @acceptance-back
+  Scenario: Cannot create an option if the option already exists
+    Given an option collection attribute Color with a Red option
+    When the user appends a Red option into the option collection attribute
+    Then there should be a validation error with message 'The option "red" already exists'
