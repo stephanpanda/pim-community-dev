@@ -30,6 +30,7 @@ use Akeneo\ReferenceEntity\Domain\Model\ReferenceEntity\ReferenceEntityIdentifie
 use Akeneo\ReferenceEntity\Domain\Repository\AttributeRepositoryInterface;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AppendAttributeOptionContext implements Context
 {
@@ -39,12 +40,22 @@ class AppendAttributeOptionContext implements Context
     /** @var AppendAttributeOptionHandler */
     private $appendAttributeOptionHandler;
 
+    /** @var ValidatorInterface */
+    private $validator;
+
+    /** @var ConstraintViolationsContext */
+    private $constraintViolationsContext;
+
     public function __construct(
         AttributeRepositoryInterface $attributeRepository,
-        AppendAttributeOptionHandler $appendAttributeOptionHandler
+        AppendAttributeOptionHandler $appendAttributeOptionHandler,
+        ValidatorInterface $validator,
+        ConstraintViolationsContext $constraintViolationsContext
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->appendAttributeOptionHandler = $appendAttributeOptionHandler;
+        $this->validator = $validator;
+        $this->constraintViolationsContext = $constraintViolationsContext;
     }
 
     /**
@@ -83,7 +94,16 @@ class AppendAttributeOptionContext implements Context
         $command->optionCode = 'red';
         $command->labels = ['en_US' => 'Red', 'fr_FR' => 'Rouge'];
 
-        ($this->appendAttributeOptionHandler)($command);
+        $violations = $this->validator->validate($command);
+        $this->constraintViolationsContext->addViolations($violations);
+
+        if ($violations->count() === 0) {
+            try {
+                ($this->appendAttributeOptionHandler)($command);
+            } catch (\Exception $e) {
+                $this->exceptionContext->setException($e);
+            }
+        }
     }
 
     /**
@@ -101,6 +121,7 @@ class AppendAttributeOptionContext implements Context
             LabelCollection::fromArray(['en_US' => 'Red', 'fr_FR' => 'Rouge'])
         );
 
+        $this->constraintViolationsContext->assertThereIsNoViolations();
         Assert::assertEquals($expectedOption, $option);
     }
 
@@ -132,7 +153,7 @@ class AppendAttributeOptionContext implements Context
     /**
      * @When the user appends a new option for this option collection attribute
      */
-    public function theUserAddANewOptionForThisOptionCollectionAttribute()
+    public function theUserAppendsANewOptionForThisOptionCollectionAttribute()
     {
         $command = new AppendAttributeOptionCommand();
         $command->referenceEntityIdentifier = 'designer';
@@ -140,6 +161,71 @@ class AppendAttributeOptionContext implements Context
         $command->optionCode = 'red';
         $command->labels = ['en_US' => 'Red', 'fr_FR' => 'Rouge'];
 
-        ($this->appendAttributeOptionHandler)($command);
+        $violations = $this->validator->validate($command);
+        $this->constraintViolationsContext->addViolations($violations);
+
+        if ($violations->count() === 0) {
+            try {
+                ($this->appendAttributeOptionHandler)($command);
+            } catch (\Exception $e) {
+                $this->exceptionContext->setException($e);
+            }
+        }
+    }
+
+    /**
+     * @Given an option collection attribute with the maximum number of options
+     */
+    public function anOptionCollectionAttributeWithTheMaximumNumberOfOptions()
+    {
+        $optionAttribute = OptionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+
+        $options = [];
+        for ($i = 0; $i < 100; $i++) {
+            $options[] = AttributeOption::create(
+                OptionCode::fromString(sprintf('code_%s', $i)),
+                LabelCollection::fromArray([])
+            );
+        }
+        $optionAttribute->setOptions($options);
+
+        $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @Given /^an option attribute with the maximum number of options$/
+     */
+    public function anOptionAttributeWithTheMaximumNumberOfOptions()
+    {
+        $optionAttribute = OptionCollectionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([ 'fr_FR' => 'Nationalite', 'en_US' => 'Nationality']),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+
+        $options = [];
+        for ($i = 0; $i < 100; $i++) {
+            $options[] = AttributeOption::create(
+                OptionCode::fromString(sprintf('code_%s', $i)),
+                LabelCollection::fromArray([])
+            );
+        }
+        $optionAttribute->setOptions($options);
+
+        $this->attributeRepository->create($optionAttribute);
     }
 }

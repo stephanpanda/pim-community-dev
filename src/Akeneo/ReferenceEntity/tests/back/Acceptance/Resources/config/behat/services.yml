@@ -102,6 +102,8 @@ services:
         arguments:
             - '@__symfony__.akeneo_referenceentity.infrastructure.persistence.repository.attribute'
             - '@__symfony__.akeneo_referenceentity.application.attribute.append_attribute_option_handler'
+            - '@__symfony__.validator'
+            - '@akeneo_referenceentity.tests.back.acceptance.context.constraint_violations_context'
         tags:
             - { name: fob.context_service }
 

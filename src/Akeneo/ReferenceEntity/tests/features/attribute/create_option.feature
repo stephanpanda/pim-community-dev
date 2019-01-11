@@ -1,7 +1,7 @@
-Feature: Append an option into an attribute
+Feature: Append a valid option into an attribute
   In order to enrich my record with one or more options for a given value
   As a user
-  I want to append an option into the available options of an option attribute or an option collection attribute
+  I want to append a new option into the available options of an option attribute or an option collection attribute
 
   Background:
     Given a valid reference entity
@@ -17,3 +17,27 @@ Feature: Append an option into an attribute
     Given an option collection attribute
     When the user appends a new option for this option collection attribute
     Then the option is added into the option collection of this attribute
+
+  @acceptance-back
+  Scenario: Cannot create an option if the maximum number of options in an option collection attribute is reached
+    Given an option collection attribute with the maximum number of options
+    When the user appends a new option for this option collection attribute
+    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
+
+  @acceptance-back
+  Scenario: Cannot create an option if the maximum number of options in an option collection attribute is reached
+    Given an option collection attribute with the maximum number of options
+    When the user appends a new option for this option collection attribute
+    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
+
+  @acceptance-back
+  Scenario: Cannot create an option if the maximum number of options in an option attribute is reached
+    Given an option attribute with the maximum number of options
+    When the user appends a new option for this option attribute
+    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
+
+  @acceptance-back
+  Scenario: Cannot create an option if the maximum number of options in an option collection attribute is reached
+    Given an option collection attribute with the maximum number of options
+    When the user appends a new option for this option collection attribute
+    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
