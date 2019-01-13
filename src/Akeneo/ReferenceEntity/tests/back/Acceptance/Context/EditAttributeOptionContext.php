@@ -25,6 +25,7 @@ use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeOrder;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeValuePerChannel;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeValuePerLocale;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\OptionAttribute;
+use Akeneo\ReferenceEntity\Domain\Model\Attribute\OptionCollectionAttribute;
 use Akeneo\ReferenceEntity\Domain\Model\LabelCollection;
 use Akeneo\ReferenceEntity\Domain\Model\ReferenceEntity\ReferenceEntityIdentifier;
 use Akeneo\ReferenceEntity\Domain\Repository\AttributeRepositoryInterface;
@@ -84,7 +85,7 @@ class EditAttributeOptionContext implements Context
     }
 
     /**
-     * @When /^the user edits the option of this option attribute$/
+     * @When /^the user edits the option of this attribute$/
      */
     public function theUserEditsTheOptionOfThisOptionAttribute()
     {
@@ -119,5 +120,31 @@ class EditAttributeOptionContext implements Context
 
         $this->constraintViolationsContext->assertThereIsNoViolations();
         Assert::assertEquals($expectedOption, $option);
+    }
+
+
+    /**
+     * @Given /^an option collection attribute with one option$/
+     */
+    public function anOptionCollectionAttributeWithOneOption()
+    {
+        $optionAttribute = OptionCollectionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([]),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
+        $optionAttribute->setOptions([
+            AttributeOption::create(
+                OptionCode::fromString('blue'),
+                LabelCollection::fromArray([])
+            )
+        ]);
+
+        $this->attributeRepository->create($optionAttribute);
     }
 }

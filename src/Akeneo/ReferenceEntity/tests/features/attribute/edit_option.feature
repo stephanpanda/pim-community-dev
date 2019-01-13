@@ -9,15 +9,15 @@ Feature: Append a valid option into an attribute
   @acceptance-back
   Scenario: Edit an existing option of an option attribute
     Given an option attribute with one option
-    When the user edits the option of this option attribute
+    When the user edits the option of this attribute
     Then the option is correctly edited
 
-#  @acceptance-back
-#  Scenario: Edit an existing option of an option collection attribute
-#    Given an option collection attribute
-#    When the user edits an option of this option collection attribute
-#    Then the option is correctly edited
-#
+  @acceptance-back
+  Scenario: Edit an existing option of an option collection attribute
+    Given an option collection attribute with one option
+    When the user edits the option of this attribute
+    Then the option is correctly edited
+
 #  @acceptance-back
 #  Scenario: Cannot edit an option if the option does not exist
 #    Given an option attribute without option
