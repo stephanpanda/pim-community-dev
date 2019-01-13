@@ -18,8 +18,8 @@ Feature: Append a valid option into an attribute
     When the user edits the option of this attribute
     Then the option is correctly edited
 
-#  @acceptance-back
-#  Scenario: Cannot edit an option if the option does not exist
-#    Given an option attribute without option
-#    When the user edits an option into the option collection attribute
-#    Then there should be a validation error with message 'The option "red" already exists'
+  @acceptance-back
+  Scenario: Cannot edit an option if the option does not exist
+    Given an option attribute without option
+    When the user edits the option of this attribute
+    Then there should be a validation error with message 'The option was not found.'

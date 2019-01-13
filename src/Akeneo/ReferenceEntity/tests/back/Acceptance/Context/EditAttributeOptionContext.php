@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Akeneo\ReferenceEntity\Acceptance\Context;
 
-use Akeneo\ReferenceEntity\Application\Attribute\EditAttribute\EditAttributeHandler;
 use Akeneo\ReferenceEntity\Application\Attribute\EditAttributeOption\EditAttributeOptionCommand;
 use Akeneo\ReferenceEntity\Application\Attribute\EditAttributeOption\EditAttributeOptionHandler;
 use Akeneo\ReferenceEntity\Domain\Model\Attribute\AttributeCode;
@@ -144,6 +143,25 @@ class EditAttributeOptionContext implements Context
                 LabelCollection::fromArray([])
             )
         ]);
+
+        $this->attributeRepository->create($optionAttribute);
+    }
+
+    /**
+     * @Given /^an option attribute without option$/
+     */
+    public function anOptionAttributeWithoutOption()
+    {
+        $optionAttribute = OptionAttribute::create(
+            AttributeIdentifier::fromString('color'),
+            ReferenceEntityIdentifier::fromString('designer'),
+            AttributeCode::fromString('color'),
+            LabelCollection::fromArray([]),
+            AttributeOrder::fromInteger(1),
+            AttributeIsRequired::fromBoolean(true),
+            AttributeValuePerChannel::fromBoolean(false),
+            AttributeValuePerLocale::fromBoolean(true)
+        );
 
         $this->attributeRepository->create($optionAttribute);
     }
