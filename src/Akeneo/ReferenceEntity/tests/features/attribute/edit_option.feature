@@ -7,37 +7,19 @@ Feature: Append a valid option into an attribute
     Given a valid reference entity
 
   @acceptance-back
-  Scenario: Append an option into an option attribute
-    Given an option attribute
-    When the user appends a new option for this option attribute
-    Then the option is added into the option collection of this attribute
+  Scenario: Edit an existing option of an option attribute
+    Given an option attribute with one option
+    When the user edits the option of this option attribute
+    Then the option is correctly edited
 
-  @acceptance-back
-  Scenario: Append an option into an option collection attribute
-    Given an option collection attribute
-    When the user appends a new option for this option collection attribute
-    Then the option is added into the option collection of this attribute
-
-  @acceptance-back
-  Scenario: Cannot create an option if the maximum number of options in an option collection attribute is reached
-    Given an option collection attribute with the maximum number of options
-    When the user appends a new option for this option collection attribute
-    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
-
-  @acceptance-back
-  Scenario: Cannot create an option if the maximum number of options in an option attribute is reached
-    Given an option attribute with the maximum number of options
-    When the user appends a new option for this option attribute
-    Then there should be a validation error with message 'You have reached the limit of 100 attribute options per attribute.'
-
-  @acceptance-back
-  Scenario: Cannot create an option if the option already exists
-    Given an option collection attribute Color with a Red option
-    When the user appends a Red option into the option collection attribute
-    Then there should be a validation error with message 'The option "red" already exists'
-
-  @acceptance-back
-  Scenario: Cannot create an option if the option already exists
-    Given an option collection attribute Color with a Red option
-    When the user appends a Red option into the option collection attribute
-    Then there should be a validation error with message 'The option "red" already exists'
+#  @acceptance-back
+#  Scenario: Edit an existing option of an option collection attribute
+#    Given an option collection attribute
+#    When the user edits an option of this option collection attribute
+#    Then the option is correctly edited
+#
+#  @acceptance-back
+#  Scenario: Cannot edit an option if the option does not exist
+#    Given an option attribute without option
+#    When the user edits an option into the option collection attribute
+#    Then there should be a validation error with message 'The option "red" already exists'

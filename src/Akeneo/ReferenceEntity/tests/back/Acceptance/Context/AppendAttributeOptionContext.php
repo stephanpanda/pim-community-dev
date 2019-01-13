@@ -98,11 +98,7 @@ class AppendAttributeOptionContext implements Context
         $this->constraintViolationsContext->addViolations($violations);
 
         if ($violations->count() === 0) {
-            try {
-                ($this->appendAttributeOptionHandler)($command);
-            } catch (\Exception $e) {
-                $this->exceptionContext->setException($e);
-            }
+            ($this->appendAttributeOptionHandler)($command);
         }
     }
 
